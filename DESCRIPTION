@@ -6,11 +6,20 @@ Author: Patricia Ryser-Welch
 Maintainer: Patricia Ryser-Welch <patricia.ryser-welch@newcastle.ac.uk>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: GPL-3
+Depends: R (>= 3.5.0)
 Encoding: UTF-8
 LazyData: true
 Suggests: 
     testthat (>= 3.0.0),
-    dsConnectClient
-
-
+    dsConnectClient,
+Imports:
+    DSI (>= 1.1.1),
+    DSOpal (>= 1.1.0),
+    dsBaseClient (>= 6.1.0),
+    RCurl,
+    R6,
+    opalr,
+    httr,
+    readr
+RoxygenNote: 7.1.1

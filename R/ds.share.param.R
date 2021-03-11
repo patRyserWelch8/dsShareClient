@@ -77,19 +77,21 @@
 #' }
 #' @author Patricia Ryser-Welch for DataSHIELD development
 #' @export ds.share.param
-#'
 ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NULL)
 {
   success <- FALSE
   tryCatch(
-    {success <- .share.parameter(param.names, tolerance, datasources)},
-    warning = function(warning) {ds.warning(ds.share.param, warning)},
-    error = function(error) {ds.error(error)},
+    {success <- dssp.share.parameter(param.names, tolerance, datasources)},
+    #warning = function(warning) {ds.warning(ds.share.param, warning)},
+    error = function(error) {dsConnectClient::ds.error(error)},
     finally = {return(success)})
 }
 
-#Helper function that completes the sharing process
-.share.parameter <- function(param.names = NULL, tolerance = 15, datasources = NULL)
+#'@title Helper function that completes the sharing process
+#'@param param.names - param names
+#'@param tolerance   - decimal places
+#'@param datasources - connections
+dssp.share.parameter <- function(param.names = NULL, tolerance = 15, datasources = NULL)
 {
 
   outcome <- FALSE
@@ -98,15 +100,14 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
   {
     if (length(param.names) > 0)
     {
-        print("123")
-        success <- .assign.settings(datasources)
+        success <- dssp.assign.settings(datasources)
 
         if (success)
         {
-          outcome <- .complete.exchange(connections = datasources, param.names, tolerance)
+          outcome <- dssp.complete.exchange(connections = datasources, param.names, tolerance)
         }
 
-        .remove.exchange.data(datasources)
+        dssp.remove.exchange.data(datasources)
     }
     else
     {
@@ -120,14 +121,15 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
   return(outcome)
 }
 
-#assigns settings on each data servers.
-.assign.settings <- function(connections)
+#'@title assigns settings on each data servers.
+#'@param connections - datasources
+dssp.assign.settings <- function(connections)
 {
   successful <- FALSE
   if (!is.null(connections))
   {
-    outcome    <- ds.aggregate(expression = call("assignSharingSettingsDS"), error.stop = TRUE , datasources = connections )
-    successful <- .transform.outcome.to.logical(outcome)
+    outcome    <- dsConnectClient::ds.aggregate(expression = call("assignSharingSettingsDS"), error.stop = TRUE , datasources = connections )
+    successful <- dssp.transform.outcome.to.logical(outcome)
 
     if (!successful)
     {
@@ -137,27 +139,33 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
   return(successful)
 }
 
-# delete from each servers
-.remove.exchange.data <- function(connections)
+#'@title delete from each servers
+#'@param connections - datasources
+dssp.remove.exchange.data <- function(connections)
 {
+
   if (!is.null(connections))
   {
-    outcome <- ds.aggregate(expression = call("removeExchangeDataDS"),error.stop = TRUE, datasources = connections)
-    print(outcome)
+    outcome <- dsConnectClient::ds.aggregate(expression = call("removeEncryptingDataDS"),error.stop = TRUE, datasources = connections)
   }
 }
 
-#delete from servers parameters
-.remove.existing.parameters <- function(connections, param.names = NULL)
+#'@title delete from servers parameters
+#'@param connections - datasources
+#'@param param.names - param names
+dssp.remove.existing.parameters <- function(connections, param.names = NULL)
 {
   for (param.name in param.names)
   {
-    ds.remove.variable(connections,param.name,"numeric")
+    dsConnectClient::ds.remove.variable(connections,param.name,"numeric")
   }
 }
 
-#launch the steps a whole exchange. Most servers become a master.
-.complete.exchange <- function(connections, param.names = NULL, tolerance = 15)
+#'@title launch the steps a whole exchange. Most servers become a master.
+#'@param connections - datasources
+#'@param param.names - param names
+#'@param tolerance   - decimal places
+dssp.complete.exchange <- function(connections, param.names = NULL, tolerance = 15)
 {
   outcome        <- FALSE
   no.connections <- length(connections)
@@ -175,7 +183,7 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
 
       master     <- connections[[current]]
       receiver   <- connections[[current+1]]
-      success    <- .exchange(master, receiver, param.names, tolerance)
+      success    <- dssp.exchange(master, receiver, param.names, tolerance)
       continue   <- success
 
       if(current < last)
@@ -193,56 +201,51 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
   return(outcome)
 }
 
-#complete an exchange between a master and a receiver. Both of these argument is a single
-#connection to a server
-.exchange <- function(master, receiver, param.names = NULL, tolerance = 15)
+#'@title complete an exchange between a master and a receiver. Both of these argument is a single
+#' connection to a server
+#'@param master - datasource
+#'@param receiver - datasource
+#'@param param.names - param names
+#'@param tolerance   - decimal places
+dssp.exchange <- function(master, receiver, param.names = NULL, tolerance = 15)
 {
-  outcome    <- FALSE
   step       <-  1
   max.steps  <-  16
-  continue   <- TRUE
+  continue   <- step <= max.steps
 
-  while(continue)
+  while(step <= max.steps)
   {
     success <- switch(
                step,
-              .encrypt.data(master,master_mode = TRUE, preserve_mode = FALSE), #1
-              .transfer.encrypted.matrix(master,receiver,master_mode = TRUE), #2
-              .encrypt.data(receiver,master_mode = FALSE, preserve_mode = FALSE), #3
-              .transfer.encrypted.matrix(receiver,master,master_mode = FALSE), #4
-              .decrypt.data(master), #5
-              .assign.param.settings(master, param.names), #6
-              .transfer.coordinates(master, receiver), #7
-              .encrypt.param(master), #8
-              .remove.encryption.data(master, master.mode = TRUE), #9
-              .remove.encryption.data(receiver, master.mode = FALSE),  #10
-              .encrypt.data(receiver,master_mode = TRUE, preserve_mode = TRUE),  #11
-              .transfer.encrypted.matrix(receiver,master), #12
-              .encrypt.data(master,master_mode = FALSE, preserve_mode = TRUE), #13
-              .transfer.encrypted.matrix(master,receiver), #14
-              .decrypt.data(receiver), #15
-              .decrypt.param(receiver, param.names, tolerance) #16
+               dssp.encrypt.data(master,master_mode = TRUE, preserve_mode = FALSE), #1
+               dssp.transfer.encrypted.matrix(master,receiver,master_mode = TRUE), #2
+               dssp.encrypt.data(receiver,master_mode = FALSE, preserve_mode = FALSE), #3
+               dssp.transfer.encrypted.matrix(receiver,master,master_mode = FALSE), #4
+               dssp.decrypt.data(master), #5
+               dssp.assign.param.settings(master, param.names), #6
+               dssp.transfer.coordinates(master, receiver), #7
+               dssp.encrypt.param(master), #8
+               dssp.remove.encryption.data(master, master.mode = TRUE), #9
+               dssp.remove.encryption.data(receiver, master.mode = FALSE),  #10
+               dssp.encrypt.data(receiver,master_mode = TRUE, preserve_mode = TRUE),  #11
+               dssp.transfer.encrypted.matrix(receiver,master), #12
+               dssp.encrypt.data(master,master_mode = FALSE, preserve_mode = TRUE), #13
+               dssp.transfer.encrypted.matrix(master,receiver), #14
+               dssp.decrypt.data(receiver), #15
+               dssp.decrypt.param(receiver, param.names, tolerance) #16
     )
 
-    print("============")
-    print(paste("step ", step))
-    print(paste("success ", success))
-    print("============")
-
-    if (success)
-    {
-      step <- step + 1
-    }
-    continue = success & (step <= max.steps)
+    step <- step + 1
+    continue   <- step <= max.steps & success
   }
   return(step == (max.steps + 1))
 }
 
-#single or multiple values are transformed in one logical values.
-.transform.outcome.to.logical <- function(value)
+#'@title single or multiple values are transformed in one logical values.
+#'@param value value
+dssp.transform.outcome.to.logical <- function(value)
 {
   outcome <- FALSE
-
   if(is.logical(value))
   {
     outcome <- value
@@ -255,69 +258,79 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
       outcome        <- all(TRUE %in% outcome.vector)
     }
   }
-  print(outcome)
   return(outcome)
 }
 
-#assigns on a datashield server a parameter settings.
-.assign.param.settings <- function(connection, param.names = NULL)
+#'@title assigns on a datashield server a parameter settings.
+#'@param connection - datasources
+#'@param param.names - param names
+dssp.assign.param.settings <- function(connection, param.names = NULL)
 {
   outcome <- FALSE
   if(is.character(param.names) & is.vector(param.names))
   {
     names.var.on.server <-  paste(param.names, collapse=";")
     expression <- call("assignParamSettingsDS",names.var.on.server)
-    outcome    <- ds.aggregate(expression = expression, datasources = connection)
+    outcome    <- dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
   }
-  return(.transform.outcome.to.logical(outcome))
+  return(dssp.transform.outcome.to.logical(outcome))
 }
 
-#encrypt data
-.encrypt.data <- function(connection, master_mode=TRUE, preserve_mode = FALSE)
+#'@title encrypt data
+#'@param connection - datasources
+#'@param master_mode - boolean
+#'@param preserve_mode - boolean
+dssp.encrypt.data <- function(connection, master_mode=TRUE, preserve_mode = FALSE)
 {
+
+   outcome    <- dsConnectClient::ds.aggregate(expression = call("get.settings"), error.stop = TRUE, datasources = connection)
    expression <- call("encryptDataDS", master_mode, preserve_mode)
-   print(expression)
-   #outcome    <- ds.aggregate(expression = expression, datasources = connection)
-   outcome    <- DSI::datashield.aggregate(expr = expression, conns = connection)
-   print(outcome)
-   return(.transform.outcome.to.logical(outcome))
+   outcome    <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = connection)
+   return(dssp.transform.outcome.to.logical(outcome))
 }
 
-#encrypt parameters
-.encrypt.param <- function(connection)
+#'@title encrypt parameters
+#'@param connection - datasources
+dssp.encrypt.param <- function(connection)
 {
   expression <- call("encryptParamDS")
-  outcome    <- ds.aggregate(expression = expression, datasources = connection)
-  return(.transform.outcome.to.logical(outcome))
+  outcome    <- dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
+  return(dssp.transform.outcome.to.logical(outcome))
 }
 
-#decrypt data
-.decrypt.data <- function(connection)
+#'@title decrypt data
+#'@param connection - datasources
+dssp.decrypt.data <- function(connection)
 {
   expression <- call("decryptDataDS")
-  outcome    <- ds.aggregate(expression = expression, datasources = connection)
-  return(.transform.outcome.to.logical(outcome))
+  outcome    <- dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
+  return(dssp.transform.outcome.to.logical(outcome))
 }
 
-#decrypt parameter
-.decrypt.param <- function(connection, param.names, tolerance = 15)
+#'@title decrypt parameter
+#'@param connection - datasources
+#'@param param.names - param names
+#'@param tolerance - decimal places
+dssp.decrypt.param <- function(connection, param.names, tolerance = 15)
 {
   names.var.on.server <-  paste(param.names, collapse=";")
   expression          <- call("decryptParamDS",names.var.on.server, tolerance)
 
-  outcome    <- ds.aggregate(expression = expression, datasources = connection)
-  return(.transform.outcome.to.logical(outcome))
+  outcome    <- dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
+  return(dssp.transform.outcome.to.logical(outcome))
 }
 
-#transform coordinates
-.transfer.coordinates <- function(sender = NULL, receiver = NULL)
+#'@title transform coordinates
+#'@param sender - datasource
+#'@param receiver - datasource
+dssp.transfer.coordinates <- function(sender = NULL, receiver = NULL)
 {
   outcome <- FALSE
 
   if(!is.null(sender) & !is.null(receiver))
   {
 
-     received.coordinates <- ds.aggregate(expression = call("getCoordinatesDS"), datasources = sender)
+     received.coordinates <- dsConnectClient::ds.aggregate(expression = call("getCoordinatesDS"), datasources = sender)
      field.names          <- names(received.coordinates)
      expected.field.names <- c("header","payload","property.a","property.b","property.c","property.d")
      has.correct.field    <- all(expected.field.names %in% field.names)
@@ -331,8 +344,8 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
                                received.coordinates$property.a, received.coordinates$property.b, received.coordinates$property.c,
                                received.coordinates$property.d)
 
-           outcome <- ds.aggregate(expression = expression, datasources = receiver)
-           outcome <- .transform.outcome.to.logical(outcome)
+           outcome <- dsConnectClient::ds.aggregate(expression = expression, datasources = receiver)
+           outcome <- dssp.transform.outcome.to.logical(outcome)
        }
      }
   }
@@ -340,14 +353,17 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
   return(outcome)
 }
 
-#transfer encrypted matrices from one dataSHIELD server to another
-.transfer.encrypted.matrix <- function(sender = NULL, receiver = NULL, master_mode = TRUE)
+#'@title transfer encrypted matrices from one dataSHIELD server to another
+#'@param sender - datasource
+#'@param receiver - datasource
+#'@param master_mode - boolean
+dssp.transfer.encrypted.matrix <- function(sender = NULL, receiver = NULL, master_mode = TRUE)
 {
   outcome <- FALSE
 
   if(!is.null(sender) & !is.null(receiver))
   {
-      received.data        <- ds.aggregate(expression = call("getDataDS"), datasources = sender )
+      received.data        <- dsConnectClient::ds.aggregate(expression = call("getDataDS"), datasources = sender )
 
       field.names          <- names(received.data)
       expected.field.names <- c("header","payload","property.a","property.b","property.c","property.d")
@@ -360,18 +376,20 @@ ds.share.param <- function(param.names = NULL, tolerance = 15, datasources = NUL
                                received.data$property.a,
                                received.data$property.b, received.data$property.c, received.data$property.d)
 
-            outcome <-  ds.aggregate(expression = expression , datasources = receiver)
+            outcome <-  dsConnectClient::ds.aggregate(expression = expression , datasources = receiver)
 
         }
       }
     }
-  return(.transform.outcome.to.logical(outcome))
+  return(dssp.transform.outcome.to.logical(outcome))
 }
 
-#delete variable used to encrypt data on a server
-.remove.encryption.data <- function(connection = NULL, master.mode = TRUE)
+#'@title delete variable used to encrypt data on a server
+#'@param connection - datasource
+#'@param master.mode - boolean
+dssp.remove.encryption.data <- function(connection = NULL, master.mode = TRUE)
 {
   expression <- call("removeEncryptingDataDS", master.mode)
-  outcome    <- ds.aggregate(expression = expression, datasources = connection)
-  return(.transform.outcome.to.logical(outcome))
+  outcome    <- dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
+  return(dssp.transform.outcome.to.logical(outcome))
 }
