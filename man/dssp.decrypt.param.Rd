@@ -10,6 +10,8 @@ dssp.decrypt.param(connection, param.names, tolerance = 15)
 \item{connection}{- datasources}
 
 \item{param.names}{- param names}
+
+\item{tolerance}{- decimal places}
 }
 \description{
 decrypt parameter

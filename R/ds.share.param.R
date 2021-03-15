@@ -100,7 +100,7 @@ dssp.share.parameter <- function(param.names = NULL, tolerance = 15, datasources
   {
     if (length(param.names) > 0)
     {
-        success <- dssp.assign.settings(datasources)
+        success <- ds.assign.sharing.settings(datasources = datasources)
 
         if (success)
         {
@@ -121,23 +121,7 @@ dssp.share.parameter <- function(param.names = NULL, tolerance = 15, datasources
   return(outcome)
 }
 
-#'@title assigns settings on each data servers.
-#'@param connections - datasources
-dssp.assign.settings <- function(connections)
-{
-  successful <- FALSE
-  if (!is.null(connections))
-  {
-    outcome    <- dsConnectClient::ds.aggregate(expression = call("assignSharingSettingsDS"), error.stop = TRUE , datasources = connections )
-    successful <- dssp.transform.outcome.to.logical(outcome)
 
-    if (!successful)
-    {
-      stop("::ds.share.param::ERR:018")
-    }
-  }
-  return(successful)
-}
 
 #'@title delete from each servers
 #'@param connections - datasources
