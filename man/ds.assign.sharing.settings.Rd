@@ -4,11 +4,12 @@
 \alias{ds.assign.sharing.settings}
 \title{assigns settings on each data servers.}
 \usage{
-ds.assign.sharing.settings(connections = NULL)
+ds.assign.sharing.settings(datasources = NULL)
 }
 \arguments{
-\item{connections}{- datasources}
+\item{datasources}{- a list of \code{DSConnection-class} objects obtained after login.}
 }
 \description{
-assigns settings on each data servers.
+assigns the initial settings required for sharing parametres or
+encoded information.
 }

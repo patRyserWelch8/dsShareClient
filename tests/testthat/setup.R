@@ -28,7 +28,8 @@ source("connection_to_datasets/init_all_datasets.R")
 
 
 options(show.error.messages = TRUE)
-
+if(FALSE)
+{
 
 print("setup - Check connections and server functions")
 
@@ -42,16 +43,16 @@ server.functions <- c("existsDS","removeDS","assignCoordinatesDS",
                       "encryptDataDS", "decryptParamDS",
                       "encryptParamDS", "removeEncryptingDataDS")
 
-aggregate.functions <- datashield.methods(connections,type="aggregate")
+#aggregate.functions <- datashield.methods(connections,type="aggregate")
 
-function.found <- server.functions %in% aggregate.functions[,"name"]
+#function.found <- server.functions %in% aggregate.functions[,"name"]
 #print(function.found)
 #print(!(server.functions %in% aggregate.functions[,"name"]))
 #print(server.function[function.found])
-if(all(function.found))
-{
-  print("All the functions have been uploaded on the server")
+#if(all(function.found))
+#{
+#  print("All the functions have been uploaded on the server")
+#}
 }
-
 
 print("setup finished")

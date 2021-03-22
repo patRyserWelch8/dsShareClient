@@ -33,6 +33,15 @@ test_that("encrypt_data",
   expect_true(dssp.encrypt.data(connections[[1]],master_mode = TRUE, preserve_mode = FALSE))
 })
 
+
+context('ds.share_param()::smk::multiple')
+test_that('multiple connections some errors. ',
+{
+  # correct parameters
+  outcome <- ds.share.param(param.name = c('pi_value', 'pi_value_B'),tolerance = 15, datasources = connections)
+  expect_true(outcome)
+})
+
 context('ds.share_param()::smk::multiple')
 test_that('multiple connections',
 {
@@ -59,6 +68,7 @@ test_that('multiple connections',
   outcome <- ds.share.param(param.name = c('pi_value', 'pi_value_B'),tolerance = 15, datasources = connections)
   expect_true(outcome)
 })
+
 
 
 

@@ -1,4 +1,4 @@
-#'@name
+#'@name ds.assign.sharing.settings
 #'@title assigns settings on each data servers.
 #'@description assigns the initial settings required for sharing parametres or
 #'encoded information.
