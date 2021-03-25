@@ -5,6 +5,7 @@ context('ds.assign.sharing.settings::smk::single')
 test_that('single connections',
 {
   expect_true(ds.assign.sharing.settings(connection))
+  print(dsConnectClient::ds.aggregate(expression = call("lsDS",NULL, ".GlobalEnv"),  datasources = connection))
 })
 
 
@@ -13,6 +14,7 @@ test_that('.assignSettings',
 {
   .create.server.var(connection)
   expect_true(ds.assign.sharing.settings(connection))
+  print(dsConnectClient::ds.aggregate(expression = call("lsDS",NULL, ".GlobalEnv"),  datasources = connection))
 })
 
 log.out.data.server()
@@ -23,6 +25,7 @@ context('ds.assign.sharing.settings::smk::multiple')
 test_that('single connections',
 {
   expect_true(ds.assign.sharing.settings(connections))
+  print(dsConnectClient::ds.aggregate(expression = call("lsDS",NULL, ".GlobalEnv"),  datasources = connection))
 })
 
 
@@ -32,6 +35,7 @@ test_that('.assignSettings',
 {
   .create.server.var(connection)
   expect_true(ds.assign.sharing.settings(connections))
+  print(dsConnectClient::ds.aggregate(expression = call("lsDS",NULL, ".GlobalEnv"),  datasources = connection))
 })
 
 log.out.data.server()
