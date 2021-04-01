@@ -11,8 +11,8 @@ test_that("dstr.check.param::expt::no_connecction",
 })
 
 
-
 connection   <- connect.dataset.1(ds.test_env)
+dsShareClient::ds.assign.sharing.settings(datasources = connection)
 context("dstr.is.eof::expt:::incorrect::single")
 
 test_that("dstr.check.param::expt::single::incorrect",
@@ -29,7 +29,7 @@ test_that("dstr.check.param::expt::single::incorrect",
 
 
 context("dstr.is.eof::expt::correct::single")
-test_that("dstr.check.param::expt::single::incorrect",
+test_that("dstr.check.param::expt::single::correct",
 {
    # complete steps before testing. is.oef
    expect_true(ds.assign.sharing.settings(connection))
@@ -39,9 +39,12 @@ test_that("dstr.check.param::expt::single::incorrect",
                                                     datasources = connection))
    expect_true(dssp.transform.outcome.to.logical(dsConnectClient::ds.aggregate(expression = call("assignDemoDataDS"),
                                                                                datasources = connection)))
-   expect_true(dsce.check.data.encrypted("datashield.mtcars.data","datashield.encrypted.data","D", connection))
+
+   expect_true(dstr.check.data.encrypted("datashield.mtcars.data","datashield.encrypted.data","D", connection))
    #print(dsConnectClient::ds.aggregate(expression = call("danger_settings"),
    #                                    datasources = connection))
+
+
    expect_false(dstr.is.eof(data.encrypted = "datashield.encrypted.data", datasources = connection))
    print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
 

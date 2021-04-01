@@ -1,5 +1,16 @@
 
+dstr.transfer <- function(data.server = NULL, data.encrypted = NULL, data.held.in.server = "D",datasources = NULL)
+{
+   success <- FALSE
+   success <- ds.assign.sharing.settings(datasources = datasources)
 
+   if (success)
+   {
+      success <- dstr.check.data.encrypted(data.server, data.encrypted, data.held.in.server, datasources)
+   }
+
+   return(success)
+}
 
 
 #'@title check arguments are correct
@@ -40,10 +51,12 @@ dstr.check.param <- function(data.server = NULL, data.encrypted = NULL, data.hel
 #'@return TRUE data are apprpriately encrypted on every DataSHIELD server. Otherwise, FALSE
 #'@notes Server errors thrown SERVER::ERR:SHARE::005 to SERVER::ERR:SHARE::007.
 #'Server errors thrown SERVER::ERR::SHARING::001 to SERVER::ERR::SHARING::002, SERVER:ERR:021
-dsce.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL, data.held.in.server = "D",datasources = NULL)
+dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL, data.held.in.server = "D",datasources = NULL)
 {
    expression <- call("isDataEncodedDS", data.server, data.encrypted,data.held.in.server)
    outcome    <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
+   print("=======")
+   print(outcome)
    return(dssp.transform.outcome.to.logical(outcome))
 }
 
