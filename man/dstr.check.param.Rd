@@ -14,6 +14,8 @@ dstr.check.param(
 )
 }
 \arguments{
+\item{data.server}{a list of encrypted data obtained from some dataSHIELD server}
+
 \item{data.encrypted}{a character variable representing the name of the R object of encrypted data}
 
 \item{data.held.in.server}{a character variable representing the name of the R object of the data on}
@@ -23,8 +25,6 @@ dstr.check.param(
 \item{client.side.variable}{a character variable representing the name of an R object}
 
 \item{datasources}{a list of connections to dataSHIELD servers}
-
-\item{data.from.server}{a list of encrypted data obtained from some dataSHIELD server}
 }
 \value{
 TRUE - all correct data type. FALSE - if checks have passed, but a class type is not correct.

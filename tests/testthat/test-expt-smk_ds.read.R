@@ -104,7 +104,7 @@ test_that("dstr.check.param::expt::single::correct",
          datasources = connection)))
 
    expect_true(dstr.check.data.encrypted("datashield.mtcars.data","datashield.encrypted.data","D", connection))
-   ##print(dsConnectClient::ds.aggregate(expression = call("danger_settings"),
+   ####print(dsConnectClient::ds.aggregate(expression = call("danger_settings"),
    #      datasources = connection))
 
 
@@ -181,16 +181,16 @@ test_that("dstr.check.param::expt::multiple::correct",
          datasources = connection)))
 
    expect_true(dstr.check.data.encrypted("datashield.mtcars.data","datashield.encrypted.data","D", connection))
-   ##print(dsConnectClient::ds.aggregate(expression = call("danger_settings"),
+   ####print(dsConnectClient::ds.aggregate(expression = call("danger_settings"),
    #      datasources = connection))
 
 
    expect_false(dstr.is.eof(data.encrypted = "datashield.encrypted.data", datasources = connection))
-   #print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
-   #print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
-   #print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
-   #print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
-   #print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
+   ###print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
+   ###print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
+   ###print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
+   ###print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
+   ###print(dstr.next(data.encrypted = "datashield.encrypted.data", no.rows = 10, datasources = connection))
 
 })
 

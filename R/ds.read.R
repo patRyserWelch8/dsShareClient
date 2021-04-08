@@ -166,30 +166,24 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
 #'@param data.encrypted a character variable representing the name of the R object of encrypted data
 #'@param no.rows a numerical variable representing to be transferred at each iteration.
 #'@param client.side.variable a character variable representing the name of an R object
+#'@param datasources  a list of connections to dataSHIELD servers
 dstr.get.data.from.server <- function(data.encrypted = NULL, no.rows = 1000, client.side.variable = NULL, datasources = NULL)
 {
    # init variable
    stop <- dstr.is.eof(data.encrypted, datasources)
-   print("^^^^^^^^^^^^")
-   print(!stop)
+
    while(!stop)
    {
       data.from.server <- dstr.next(data.encrypted,no.rows, datasources)
-      print("^^^^^^^^^^^^")
       dstr.concatenate(data.from.server, client.side.variable)
-
-
       stop          <- dstr.is.eof(data.encrypted, datasources)
-      print(!stop)
    }
-   print("============")
-   print(stop)
    return(stop)
 }
 
 #'@title check arguments are correct
 #'@description throw some errors or return a logical value
-#'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
+#'@param data.server a list of encrypted data obtained from some dataSHIELD server
 #'@param data.encrypted a character variable representing the name of the R object of encrypted data
 #'@param data.held.in.server a character variable representing the name of the R object of the data on
 #'@param no.rows a numerical variable representing to be transferred at each iteration.
@@ -253,10 +247,9 @@ dstr.check.param <- function(data.server = NULL,
 
 #'@title check the data has been suitably encrypted
 #'@description call the server-side function \code{isDataEncodedDS} from the server package dsShareServer
-#'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
+#'@param data.server a list of encrypted data obtained from some dataSHIELD server
 #'@param data.encrypted a character variable representing the name of the R object of encrypted data
 #'@param data.held.in.server a character variable representing the name of the R object of the data on
-#'@param client.side.variable a character variable representing the name of an R object
 #'@param datasources  a list of connections to dataSHIELD servers
 #'@return TRUE data are apprpriately encrypted on every DataSHIELD server. Otherwise, FALSE
 #'@notes Server errors thrown SERVER::ERR:SHARE::005 to SERVER::ERR:SHARE::007.
@@ -265,8 +258,6 @@ dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL,
 {
    expression <- call("isDataEncodedDS", data.server, data.encrypted,data.held.in.server)
    outcome    <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
-   print("=======")
-   print(outcome)
    return(dssp.transform.outcome.to.logical(outcome))
 }
 

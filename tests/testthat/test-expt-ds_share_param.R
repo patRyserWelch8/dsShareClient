@@ -17,7 +17,7 @@ context('ds.share_param()::expt::assignSettings::single')
 test_that('.assignSettings',
 {
   .create.server.var(connection)
-  expect_true(ds.assign.sharing.settings(connections))
+  expect_true(ds.assign.sharing.settings(connection))
 })
 
 log.out.data.server()

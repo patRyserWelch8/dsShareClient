@@ -159,11 +159,11 @@ connect.all.datasets <- function()
   source("connection_to_datasets/login_details.R")
    init.all.datasets()
    log.in.data.server()
-   print("---- inside connect all datasets ----")
-   print(ds.test_env$connection.DSI)
-   print(class(ds.test_env$connection.DSI))
-   print(is.list(ds.test_env$connection.DSI))
-   print("---- inside connect all datasets ----")
+   ##print("---- inside connect all datasets ----")
+   ##print(ds.test_env$connection.DSI)
+   ##print(class(ds.test_env$connection.DSI))
+   ##print(is.list(ds.test_env$connection.DSI))
+   ##print("---- inside connect all datasets ----")
    
 }
 

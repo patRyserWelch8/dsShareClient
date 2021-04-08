@@ -12,15 +12,13 @@ dstr.check.data.encrypted(
 )
 }
 \arguments{
+\item{data.server}{a list of encrypted data obtained from some dataSHIELD server}
+
 \item{data.encrypted}{a character variable representing the name of the R object of encrypted data}
 
 \item{data.held.in.server}{a character variable representing the name of the R object of the data on}
 
 \item{datasources}{a list of connections to dataSHIELD servers}
-
-\item{data.from.server}{a list of encrypted data obtained from some dataSHIELD server}
-
-\item{client.side.variable}{a character variable representing the name of an R object}
 }
 \value{
 TRUE data are apprpriately encrypted on every DataSHIELD server. Otherwise, FALSE

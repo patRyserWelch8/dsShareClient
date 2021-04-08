@@ -18,6 +18,7 @@ test_that("dstr.check.param::expt::correct",
   expect_true(dstr.check.param(data.server = "datashield.mtcars.data",
                                 data.encrypted = "datashield.encrypted.data",
                                 data.held.in.server = "D",
+                                client.side.variable = "local_var",
                                 datasources = connection))
 })
 

@@ -17,6 +17,8 @@ dstr.get.data.from.server(
 \item{no.rows}{a numerical variable representing to be transferred at each iteration.}
 
 \item{client.side.variable}{a character variable representing the name of an R object}
+
+\item{datasources}{a list of connections to dataSHIELD servers}
 }
 \description{
 read iteratively the data from the server
