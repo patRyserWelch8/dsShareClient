@@ -15,7 +15,7 @@ test_that("dstr.next::expt::no_connection",
 context("dstr.transfer::expt::no_connection")
 test_that("dstr.transfer::expt::no_connection",
 {
-   expect_error(dstr.transfer(data.server = "datashield.mtcars.data",
+   expect_error(dstr.transfer(data.from.server = "datashield.mtcars.data",
                 data.encrypted = "datashield.encrypted.data",
                data.held.in.server = "D",
                no.rows = 10,
@@ -23,7 +23,17 @@ test_that("dstr.transfer::expt::no_connection",
                datasources = NULL))
 })
 
-
+context("ds.read::expt::no_connection")
+test_that("ds.read::expt::no_connection",
+{
+   expect_false(ds.read(data.from.server = "datashield.mtcars.data",
+                        data.encrypted = "datashield.encrypted.data",
+                        data.held.in.server = "D",
+                        no.rows = 10,
+                        client.side.variable = "received.data",
+                        datasources = NULL))
+   expect_false(exists("received.data", where = 1))
+})
 
 connection   <- connect.dataset.1(ds.test_env)
 dsShareClient::ds.assign.sharing.settings(datasources = connection)
@@ -33,17 +43,36 @@ test_that("dstr.transfer::expt::single",
 {
 
    expect_true(dssp.transform.outcome.to.logical(dsConnectClient::ds.aggregate(expression = call("assignDemoDataDS"),
-         datasources = connection)))
-   expect_equal(dstr.transfer(data.server = "datashield.mtcars.data",
-data.encrypted = "datashield.encrypted.data",
-data.held.in.server = "D",
-no.rows = 10,
-client.side.variable = "received.data",
-datasources = connection),
-     TRUE)
+                                                                               datasources = connection)))
+   expect_equal(dstr.transfer(data.from.server = "datashield.mtcars.data",
+                              data.encrypted = "datashield.encrypted.data",
+                              data.held.in.server = "D",
+                              no.rows = 10,
+                              client.side.variable = "received.data",
+                              datasources = connection),
+                              TRUE)
 })
 
 log.out.data.server()
+
+connection   <- connect.dataset.1(ds.test_env)
+context("ds.read::expt::single")
+test_that("ds.read::expt::single",
+{
+
+   expect_true(dssp.transform.outcome.to.logical(dsConnectClient::ds.aggregate(expression = call("assignDemoDataDS"),
+                                                                                         datasources = connection)))
+   expect_equal(ds.read(data.from.server = "datashield.mtcars.data",
+                                        data.encrypted = "datashield.encrypted.data",
+                                        data.held.in.server = "D",
+                                        no.rows = 10,
+                                        client.side.variable = "received.data",
+                                        datasources = connection),
+                          TRUE)
+   expect_true(exists("received.data", where = 1))
+})
+log.out.data.server()
+
 connection   <- connect.dataset.1(ds.test_env)
 
 context("dstr.is.eof::expt:::incorrect::single")
@@ -93,7 +122,7 @@ test_that("dstr.transfer::expt::multiple",
 
    expect_true(dssp.transform.outcome.to.logical(dsConnectClient::ds.aggregate(expression = call("assignDemoDataDS"),
                                                                                datasources = connection)))
-   expect_equal(dstr.transfer(data.server = "datashield.mtcars.data",
+   expect_equal(dstr.transfer(data.from.server = "datashield.mtcars.data",
                               data.encrypted = "datashield.encrypted.data",
                               data.held.in.server = "D",
                               no.rows = 10,
@@ -102,6 +131,24 @@ test_that("dstr.transfer::expt::multiple",
       TRUE)
 })
 
+log.out.data.server()
+
+connection   <- connect.all.datasets(ds.test_env)
+context("ds.read::expt::multiple")
+test_that("ds.read::expt::multiple",
+{
+
+             expect_true(dssp.transform.outcome.to.logical(dsConnectClient::ds.aggregate(expression = call("assignDemoDataDS"),
+                                                                                         datasources = connection)))
+             expect_equal(ds.read(data.from.server = "datashield.mtcars.data",
+                                  data.encrypted = "datashield.encrypted.data",
+                                  data.held.in.server = "D",
+                                  no.rows = 10,
+                                  client.side.variable = "received.data",
+                                  datasources = connection),
+                          TRUE)
+             expect_true(exists("received.data", where = 1))
+})
 log.out.data.server()
 
 connection   <- connect.all.datasets(ds.test_env)

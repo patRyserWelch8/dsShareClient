@@ -1,5 +1,40 @@
+#'@name  ds.read
+#'@title retrieve encrypted data from datashield servers
+#'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param data.held.in.server a character variable representing the name of the R object of the data on
+#'@param no.rows a numerical variable representing to be transferred at each iteration.
 #'@param client.side.variable a character variable representing the name of an R object
-dstr.transfer <- function(data.server          = NULL,
+#'@param datasources  a list of connections to dataSHIELD servers
+ds.read <- function(data.from.server     = NULL,
+                    data.encrypted       = NULL,
+                    data.held.in.server  = "D",
+                    no.rows              = 1000,
+                    client.side.variable = NULL,
+                    datasources          = NULL)
+{
+   success <- FALSE
+   tryCatch(
+      {success <- dstr.transfer(data.from.server,
+                                data.encrypted,
+                                data.held.in.server,
+                                no.rows,
+                                client.side.variable,
+                                datasources)},
+      #warning = function(warning) {ds.warning(ds.share.param, warning)},
+      error = function(error) {dsConnectClient::ds.error(error)},
+      finally = {return(success)})
+}
+
+#'@name dstr.transfer
+#'@title obtain encrypted data from some dataSHIELD servers
+#'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param data.held.in.server a character variable representing the name of the R object of the data on
+#'@param no.rows a numerical variable representing to be transferred at each iteration.
+#'@param client.side.variable a character variable representing the name of an R object
+#'@param datasources  a list of connections to dataSHIELD servers
+dstr.transfer <- function(data.from.server     = NULL,
                           data.encrypted       = NULL,
                           data.held.in.server  = "D",
                           no.rows              = 1000,
@@ -11,7 +46,7 @@ dstr.transfer <- function(data.server          = NULL,
    env     <- globalenv()
 
    #check the arguments are correct.....
-   success <- dstr.check.param(data.server,
+   success <- dstr.check.param(data.from.server,
                                data.encrypted,
                                data.held.in.server,
                                no.rows,
@@ -27,7 +62,7 @@ dstr.transfer <- function(data.server          = NULL,
       if (success)
       {
          # check the data on the server are suitably encrypted
-         success <- dstr.check.data.encrypted(data.server, data.encrypted, data.held.in.server, datasources)
+         success <- dstr.check.data.encrypted(data.from.server, data.encrypted, data.held.in.server, datasources)
 
          # if data is suitably encrypted continue
          if (success)
@@ -73,13 +108,8 @@ dstr.concatenate <- function(data.from.server = list(), client.side.variable = N
    env        <- globalenv()
    data.saved <- get(client.side.variable, envir = env)
    data.saved <- rbind.data.frame(data.saved, extracted.data)
-  # print("****************************")
-   #print(data.saved)
-   #data.saved <- data.saved[order(data.saved$x),]
-   #print(data.saved)
+
    assign(client.side.variable, data.saved, envir = env)
-
-
 }
 
 
@@ -133,6 +163,8 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
 
 #'@name dstr.get.data.from.server
 #'@title read iteratively the data from the server
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param no.rows a numerical variable representing to be transferred at each iteration.
 #'@param client.side.variable a character variable representing the name of an R object
 dstr.get.data.from.server <- function(data.encrypted = NULL, no.rows = 1000, client.side.variable = NULL, datasources = NULL)
 {
@@ -157,6 +189,12 @@ dstr.get.data.from.server <- function(data.encrypted = NULL, no.rows = 1000, cli
 
 #'@title check arguments are correct
 #'@description throw some errors or return a logical value
+#'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param data.held.in.server a character variable representing the name of the R object of the data on
+#'@param no.rows a numerical variable representing to be transferred at each iteration.
+#'@param client.side.variable a character variable representing the name of an R object
+#'@param datasources  a list of connections to dataSHIELD servers
 #'@return TRUE - all correct data type. FALSE - if checks have passed, but a class type is not correct.
 #'@note throws errors CLIENT:SHARE:ERR:100 to CLIENT:SHARE:ERR:103
 dstr.check.param <- function(data.server = NULL,
@@ -215,6 +253,11 @@ dstr.check.param <- function(data.server = NULL,
 
 #'@title check the data has been suitably encrypted
 #'@description call the server-side function \code{isDataEncodedDS} from the server package dsShareServer
+#'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param data.held.in.server a character variable representing the name of the R object of the data on
+#'@param client.side.variable a character variable representing the name of an R object
+#'@param datasources  a list of connections to dataSHIELD servers
 #'@return TRUE data are apprpriately encrypted on every DataSHIELD server. Otherwise, FALSE
 #'@notes Server errors thrown SERVER::ERR:SHARE::005 to SERVER::ERR:SHARE::007.
 #'Server errors thrown SERVER::ERR::SHARING::001 to SERVER::ERR::SHARING::002, SERVER:ERR:021
@@ -229,6 +272,8 @@ dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL,
 
 
 #'@title indicates some encrypted data remains to be transferred.
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param datasources  a list of connections to dataSHIELD servers
 #'@return TRUE if all the data have been transferred in every server
 #'@note Server errors thrown SERVER::ERR::SHARING::001, SERVER:ERR:021, SERVER:ERR:009
 #'It is assumed the parameter is correct and have been checked with
@@ -241,6 +286,9 @@ dstr.is.eof <- function(data.encrypted = "", datasources = NULL)
 }
 
 #'@title transfers encrypted data from the servers for computations
+#'@param data.encrypted a character variable representing the name of the R object of encrypted data
+#'@param no.rows a numerical variable representing to be transferred at each iteration.
+#'@param datasources  a list of connections to dataSHIELD servers
 #'@return TRUE if all the data have been transferred without any issues.
 #'@note Server errors thrown SERVER::ERR::SHARING::001, SERVER:ERR:002, SERVER:ERR:004, SERVER:ERR:021
 #'It is assumed the parameter is correct and have been checked with \code{dstr.check.param}. It is also assumed
