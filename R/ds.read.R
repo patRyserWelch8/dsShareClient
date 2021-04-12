@@ -91,8 +91,10 @@ dstr.transfer <- function(data.from.server     = NULL,
 #'in the global environment.
 dstr.concatenate <- function(data.from.server = list(), client.side.variable = NULL)
 {
+   print(data.from.server)
    #extract data from the structure sent from the server
    extracted.data <- lapply(data.from.server, dstr.extract.encrypted.data)
+
 
    # attach the sources to each matrix as last column
    sources        <- 1:length(extracted.data)
