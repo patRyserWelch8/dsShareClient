@@ -1,7 +1,6 @@
-if(FALSE)
-{
-context("ds.write::smk::incorrect_param")
-test_that("ds.write::smk::incorrect_param",
+
+context("ds.write::expt::incorrect_param")
+test_that("ds.write::expt::incorrect_param",
 {
   expect_false(ds.write())
   expect_false(ds.write(data.to.server = pi))
@@ -29,26 +28,31 @@ test_that("ds.write::smk::incorrect_param",
                         datasources   = list()))
 
 })
-}
+
 connection   <- connect.all.datasets(ds.test_env)
-context("ds.write::smk::correct_param")
-test_that("ds.write::smk:correct_param",
+context("ds.write::expt::correct_param")
+test_that("ds.write::expt:correct_param",
 {
-  data  <- data.frame(a = c(1:6), b = c(1:6), c = c(1:6), x = 1:3)
+  data  <- data.frame(a = c(1:60000), b = c(1:60000), c = c(1:60000), x = 1:3)
   assign("myVar",data,  pos = 1)
   expect_true(exists("myVar", where = 1))
+
+  expect_true(ds.assign.sharing.settings(connection))
+  expect_true(dsConnectClient::ds.exists.on.server(variable.name = "settings_ds_share",
+                                                   class.type = "list",
+                                                   error.stop = TRUE,
+                                                   datasources = connection))
   expect_true(ds.write(data.to.server = "var.on.server",
-                        no.rows        = 10,
+                        no.rows        = 10000,
                         client.side.variable = "myVar",
                         column.server = "x",
                         datasources   = connection))
 
 })
 
-if (FALSE)
-{
-context("dswr.check.param::smk::incorrect_param")
-test_that("dswr.check.param::smk::incorrect_param",
+
+context("dswr.check.param::expt::incorrect_param")
+test_that("dswr.check.param::expt::incorrect_param",
 {
             expect_error(dswr.check.param())
             expect_error(dswr.check.param(data.to.server = pi))
@@ -76,18 +80,16 @@ test_that("dswr.check.param::smk::incorrect_param",
                                   datasources   = list()))
 
 })
-}
-if (FALSE)
-{
+
 connection   <- connect.all.datasets(ds.test_env)
 context("dswr.check.param::expt::correct_param")
 test_that("dswr.check.param::expt:correct_param",
 {
-            data  <- data.frame(a = c(1:3000), b = c(1:3000), c = c(1:3000), x = 1:3)
+            data  <- data.frame(a = c(1:60000), b = c(1:60000), c = c(1:60000), x = 1:3)
             assign("myVar",data,  pos = 1)
             expect_true(exists("myVar", where = 1))
             expect_true(dswr.check.param(data.to.server = "var.on.server",
-                                 no.rows        = 10,
+                                 no.rows        = 1000,
                                  client.side.variable = "myVar",
                                  column = "x",
                                  client.side.split = "myVar_split",
@@ -100,16 +102,14 @@ test_that("dswr.check.param::expt:correct_param",
                                          datasources   = connection))
 
 })
-}
+
 
 log.out.data.server()
 
-if (FALSE)
-{
 
 connection   <- connect.dataset.2(ds.test_env)
-context("dswr.check.param::smk::incorrect_param")
-test_that("dswr.check.param::smk::incorrect_param",
+context("dswr.check.param::expt::incorrect_param")
+test_that("dswr.check.param::expt::incorrect_param",
 {
             expect_error(dswr.check.param())
             expect_error(dswr.check.param(data.to.server = pi))
@@ -169,6 +169,38 @@ test_that("dswr.check.param::expt:correct_param",
 
 })
 
-}
+
+context("ds.write::expt::correct_param")
+test_that("ds.write::expt:correct_param",
+{
+  data  <- data.frame(a = c(1:60000), b = c(1:60000), c = c(1:60000), x = 1)
+  assign("myVar",data,  pos = 1)
+  expect_true(exists("myVar", where = 1))
+
+  expect_true(ds.assign.sharing.settings(connection))
+  expect_true(dsConnectClient::ds.exists.on.server(variable.name = "settings_ds_share",
+                                                   class.type = "list",
+                                                   error.stop = TRUE,
+                                                   datasources = connection))
+
+
+  expect_true(ds.write(data.to.server = "var.on.server",
+                       no.rows        = 10000,
+                       client.side.variable = "myVar",
+                       column.server = "x",
+                       datasources   = connection))
+
+  # the number of servers is incorrect for each label
+  data  <- data.frame(a = c(1:60000), b = c(1:60000), c = c(1:60000), x = 1:3)
+  assign("myVar",data,  pos = 1)
+  expect_true(exists("myVar", where = 1))
+
+  expect_false(ds.write(data.to.server = "var.on.server",
+                       no.rows        = 30000,
+                       client.side.variable = "myVar",
+                       column.server = "x",
+                       datasources   = connection))
+})
+
 log.out.data.server()
 

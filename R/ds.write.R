@@ -16,6 +16,7 @@
 #' @param datasources  a list of connections to dataSHIELD servers
 #' @export
 ds.write <- function(data.to.server        = NULL,
+                     is.new.var.server    = TRUE, # need documenting
                      no.rows               = 1000,
                      client.side.variable  = NULL,
                      column.server         = NULL,
@@ -45,6 +46,7 @@ ds.write <- function(data.to.server        = NULL,
 #' the server origin
 #' @param datasources  a list of connections to dataSHIELD servers
 dswr.transfer <- function(data.to.server       = NULL,
+                          is.new.var.server    = TRUE,
                           no.rows              = 1000,
                           client.side.variable = NULL,
                           column               = NULL,
@@ -63,16 +65,18 @@ dswr.transfer <- function(data.to.server       = NULL,
   {
     success <- dswr.split(client.side.variable, column, client.side.split, datasources)
 
-    dswr.write(data.to.server, no.rows, client.side.split, datasources)
-
-
+    if(success)
+    {
+      success <- dswr.write(data.to.server,is.new.var.server, no.rows, client.side.split, datasources)
+    }
   }
   return(success)
 }
 
-dswr.write <- function(data.to.server, no.rows, client.side.split,datasources)
+dswr.write <- function(data.to.server,is.new.var.server,  no.rows, client.side.split, datasources)
 {
-
+  outcome <- FALSE
+  success <- FALSE
   env <- globalenv()
   if(exists(client.side.split, envir = env))
   {
@@ -81,33 +85,94 @@ dswr.write <- function(data.to.server, no.rows, client.side.split,datasources)
 
       # update stopping criterion
       stop          <- all(lapply(data, nrow) == 0)
+      print("The transfer of data between the client and the server has started. It may take a while")
       while(!stop)
       {
+          print("...")
           # extract the data to be written to server  - format into a matrix
           data.to.write <- lapply(data, function(x){data.matrix(na.omit(x[1:no.rows,1:ncol(x)-1]))})
 
           #set the seeds
 
           # format data ready for process
-          data.to.write <- lapply(data.to.write, function(x){dswr.encode.data(x,
-                                                                              ncol(x),
-                                                                              runif(1,min=1e11, max =9e15))})
+          data.to.write <- lapply(data.to.write, function(x)
+                                                 {dswr.encode.data(x, ncol(x),runif(1,min=1e9,max =9e11))})
 
 
           #server call to write data ....[to do ....] if return false stop ....
+          success <- dswr.send.data.to.server(data.to.server = data.to.server,
+                                              data.to.write = data.to.write,
+                                              is.new.var.server = is.new.var.server,
+                                              datasources = datasources)
 
+          if(success)
+          {
+            # remove data written data from data frame
+            data  <- lapply(data,function(x){na.omit(x[no.rows+1:nrow(x)+1,])})
 
-          # remove data written data from data frame
-          data          <- lapply(data,function(x){na.omit(x[no.rows+1:nrow(x)+1,])})
-
-          # update stopping criterion
-          stop      <- all(lapply(data, nrow) == 0)
+            # update stopping criterion
+            stop   <- all(lapply(data, nrow) == 0)
+          }
+          else
+          {
+            stop   <- TRUE
+          }
       }
-
+      print("The transfer of data has ended.")
   }
+  #TRUE if all data has been written to server. Otherwise FALSE.
+  return(all(lapply(data, nrow) == 0))
 }
 
+# this function has been implemented using functionality of DSI prior this new feature
+# https://datashield.discourse.group/t/how-to-send-10-messages-using-datashield-aggregate-to-10-servers-simultaneously/367/10
+# calls concatDataToVariableDS <- function(data.written.to.server = "",
+#                                          class.type             = "data.frame",
+#                                          is.new.var = TRUE,
+#                                          header = "",
+#                                          payload = "",
+#                                          property.a = 0,
+#                                          property.b = 0,
+#                                          property.c = 0.0,
+#                                          property.d = 0.0)
 
+dswr.send.data.to.server <- function(data.to.server, data.to.write = list(), is.new.var.server = TRUE, datasources)
+{
+  outcome <- FALSE
+
+  # check the number of data sources and the list is not
+  # empty
+  if(length(datasources) <= length(data.to.write) &
+     length(data.to.write) > 0)
+  {
+    # compute indices
+    indices <- 1:length(datasources)
+
+
+    # prepare each server call
+    calls <- lapply(data.to.write, function(x){call("concatDataToVariableDS",
+                                                     data.to.server,
+                                                     "data.frame",
+                                                     is.new.var.server,
+                                                     x$header,
+                                                     x$payload,
+                                                     x$property.a,
+                                                     x$property.b,
+                                                     x$property.c,
+                                                     x$property.d)})
+
+    # server calls
+    outcome <- lapply(indices, function(x){dsConnectClient::ds.aggregate(calls[[x]], TRUE, TRUE, datasources[[x]])})
+
+    # transform to one logical value
+    outcome <- dssp.transform.outcome.to.logical(outcome)
+  }
+
+  return(outcome)
+}
+
+# encode the data to be written to the server.
+# this is a standard apply between dsShareServer and dsShareClient
 dswr.encode.data <- function(data.to.write, no.columns, index)
 {
 
