@@ -1,0 +1,13 @@
+﻿err_code,error_message 
+SERVER::ERR::SHARING::003,Some data were not encoded at all.Have you encoded any data before calling this function?
+ERR::SERVER::TESTING::001,TESTING OPTION IS SET TO 1
+ERR::SERVER::TESTING::002,TESTING OPTION IS SET TO 2
+SERVER::ERR::SHARING::004,Some data could be obtained securely. Start again the whole exchange.
+SERVER::ERR::SHARING::009,Some SHARING information may not have been encoded on one server. Start again the whole exchange. 
+SERVER::ERR::SHARING::007,Some data may not have been received on a server. Start again the whole exchange. 
+SERVER::ERR::SHARING::008,The SHARING parameters  may have not been created on the server yet. Please use ds.ls() function to check. 
+SERVER::ERR::SHARING::006,The arguments passed to the servers are incorrect. Their length may indicate they have no character. Numerical values may be set to 0 or be negative. Check the server-side function call. 
+SERVER::ERR::SHARING::005,The arguments passed to the servers are incorrect. The data type is either not numerical or character. Check the server-side function call. 
+SERVER::ERR::SHARING::001,A server is not allowed to taking part in sharing SHARING parameters.
+SERVER::ERR::SHARING::002,A function on the server has not received the appropriate arguments.
+SERVER-ERR-000,Some error thrown by stop function on the server in an aggregate function.
