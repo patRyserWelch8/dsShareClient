@@ -140,6 +140,7 @@ dswr.write <- function(data.to.server,class.type.server,  no.rows, client.side.s
   return(all(lapply(data, nrow) == 0))
 }
 
+
 # this function has been implemented using functionality of DSI prior this new feature
 # https://datashield.discourse.group/t/how-to-send-10-messages-using-datashield-aggregate-to-10-servers-simultaneously/367/10
 # calls concatDataToVariableDS <- function(data.written.to.server = "",

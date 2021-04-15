@@ -91,7 +91,7 @@ dstr.transfer <- function(data.from.server     = NULL,
 #'in the global environment.
 dstr.concatenate <- function(data.from.server = list(), client.side.variable = NULL)
 {
-   print(data.from.server)
+
    #extract data from the structure sent from the server
    extracted.data <- lapply(data.from.server, dstr.extract.encrypted.data)
 
