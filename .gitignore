@@ -35,3 +35,4 @@ vignettes/*.pdf
 *.utf8.md
 *.knit.md
 tests/testthat/working_tests/.DS_Store
+.DS_Store
