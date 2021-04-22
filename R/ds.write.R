@@ -9,6 +9,7 @@
 #' @param data.to.server - a character argument representing the name of new server variable
 #' @param no.rows        - a numerical (integer) argument indicatind the maximum of rows used
 #' in one transfer of data
+#' @param class.type.server - a character argument indicating the a valid class
 #' @param client.side.variable - a character argument representing the name of client.side.variable
 #' storing the outcome of the computations
 #' @param column.server - a character argument representing the name of column used to indicate

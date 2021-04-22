@@ -6,6 +6,7 @@
 #'@param no.rows a numerical variable representing to be transferred at each iteration.
 #'@param client.side.variable a character variable representing the name of an R object
 #'@param datasources  a list of connections to dataSHIELD servers
+#'@export ds.read
 ds.read <- function(data.from.server     = NULL,
                     data.encrypted       = NULL,
                     data.held.in.server  = "D",
