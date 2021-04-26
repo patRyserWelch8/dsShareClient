@@ -197,7 +197,7 @@ dssp.exchange <- function(master, receiver, param.names = NULL, tolerance = 15)
   max.steps  <-  16
   continue   <- step <= max.steps
 
-  while(step <= max.steps)
+  while(continue)
   {
     success <- switch(
                step,
@@ -219,6 +219,10 @@ dssp.exchange <- function(master, receiver, param.names = NULL, tolerance = 15)
                dssp.decrypt.param(receiver, param.names, tolerance) #16
     )
 
+    print("&&&&&&&&&&&&&&")
+    print(step)
+    print(success)
+    print("&&&&&&&&&&&&&&")
     step <- step + 1
     continue   <- step <= max.steps & success
   }
