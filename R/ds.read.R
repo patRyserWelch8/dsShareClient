@@ -98,21 +98,32 @@ dstr.concatenate <- function(data.from.server = list(), client.side.variable = N
 
    #extract data from the structure sent from the server
    extracted.data <- lapply(data.from.server, dstr.extract.encrypted.data)
+   print("==========")
+   print(ncol(extracted.data))
 
 
    # attach the sources to each matrix as last column
    sources        <- 1:length(extracted.data)
    extracted.data  <- lapply(sources,function(x,data){return(cbind(data[[x]],x))},data = extracted.data)
 
+   print("==========")
+   print(ncol(extracted.data))
     # bind the matrices together
    extracted.data <- do.call(rbind, extracted.data)
 
    # convert matrix into a data frame
    extracted.data <- as.data.frame(extracted.data)
 
+   print("==========")
+   print(ncol(extracted.data))
+
    # save data
    env        <- globalenv()
    data.saved <- get(client.side.variable, envir = env)
+
+   print("==========")
+   print(ncol(data.saved))
+   print(ncol(extracted.data))
    data.saved <- rbind.data.frame(data.saved, extracted.data)
 
    assign(client.side.variable, data.saved, envir = env)
