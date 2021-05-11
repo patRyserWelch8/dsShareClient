@@ -9,6 +9,7 @@
 #' @param data.to.server - a character argument representing the name of new server variable
 #' @param no.rows        - a numerical (integer) argument indicatind the maximum of rows used
 #' in one transfer of data
+#' @param class.type.server - a character argument indicating the a valid class
 #' @param client.side.variable - a character argument representing the name of client.side.variable
 #' storing the outcome of the computations
 #' @param column.server - a character argument representing the name of column used to indicate
@@ -90,7 +91,6 @@ dswr.write <- function(data.to.server,class.type.server,  no.rows, client.side.s
 
       # update stopping criterion
       stop          <- all(lapply(data, nrow) == 0)
-      print("The transfer of data between the client and the server has started. It may take a while")
       while(!stop)
       {
           print("...")
@@ -134,8 +134,7 @@ dswr.write <- function(data.to.server,class.type.server,  no.rows, client.side.s
             stop   <- TRUE
           }
       }
-      print("The transfer of data has ended.")
-  }
+   }
   #TRUE if all data has been written to server. Otherwise FALSE.
   return(all(lapply(data, nrow) == 0))
 }
@@ -354,7 +353,6 @@ dswr.check.param <- function(data.to.server        = NULL, # done
              exists(client.side.variable, envir = env)        &
              is.data.frame(data)                              &
              column.exists                                    &
-
              length.factors == no.servers
 
   return(success)

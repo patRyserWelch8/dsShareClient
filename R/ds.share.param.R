@@ -197,7 +197,7 @@ dssp.exchange <- function(master, receiver, param.names = NULL, tolerance = 15)
   max.steps  <-  16
   continue   <- step <= max.steps
 
-  while(step <= max.steps)
+  while(continue)
   {
     success <- switch(
                step,
@@ -219,6 +219,7 @@ dssp.exchange <- function(master, receiver, param.names = NULL, tolerance = 15)
                dssp.decrypt.param(receiver, param.names, tolerance) #16
     )
 
+    print("...")
     step <- step + 1
     continue   <- step <= max.steps & success
   }
@@ -266,7 +267,6 @@ dssp.assign.param.settings <- function(connection, param.names = NULL)
 #'@param preserve_mode - boolean
 dssp.encrypt.data <- function(connection, master_mode=TRUE, preserve_mode = FALSE)
 {
-
    outcome    <- dsConnectClient::ds.aggregate(expression = call("get.settings"), error.stop = TRUE, datasources = connection)
    expression <- call("encryptDataDS", master_mode, preserve_mode)
    outcome    <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = connection)
@@ -298,9 +298,8 @@ dssp.decrypt.data <- function(connection)
 dssp.decrypt.param <- function(connection, param.names, tolerance = 15)
 {
   names.var.on.server <-  paste(param.names, collapse=";")
-  expression          <- call("decryptParamDS",names.var.on.server, tolerance)
-
-  outcome    <- dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
+  expression          <-  call("decryptParamDS",names.var.on.server, tolerance)
+  outcome             <-  dsConnectClient::ds.aggregate(expression = expression, datasources = connection)
   return(dssp.transform.outcome.to.logical(outcome))
 }
 
@@ -313,7 +312,6 @@ dssp.transfer.coordinates <- function(sender = NULL, receiver = NULL)
 
   if(!is.null(sender) & !is.null(receiver))
   {
-
      received.coordinates <- dsConnectClient::ds.aggregate(expression = call("getCoordinatesDS"), datasources = sender)
      field.names          <- names(received.coordinates)
      expected.field.names <- c("header","payload","property.a","property.b","property.c","property.d")
@@ -321,7 +319,6 @@ dssp.transfer.coordinates <- function(sender = NULL, receiver = NULL)
 
      if (has.correct.field)
      {
-
        if(grepl(received.coordinates$header,"FM1"))
        {
            expression <- call("assignCoordinatesDS",received.coordinates$header, received.coordinates$payload,
