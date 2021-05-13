@@ -53,16 +53,18 @@ dstr.transfer <- function(data.from.server     = NULL,
                                no.rows,
                                client.side.variable,
                                datasources)
+   print("1")
    # if arguments correct continue...
    if(success)
    {
-
+      print("2")
       # assign on the server the sharing settings for the transfer....
       success <- ds.assign.sharing.settings(datasources = datasources)
 
       # if assignment successful continue
       if (success)
       {
+         print("3")
          # check the data on the server are suitably encrypted - NEEDS REVIEWINNG
          success <- dstr.check.data.encrypted(data.from.server, data.encrypted, data.held.in.server, datasources)
 
@@ -70,7 +72,7 @@ dstr.transfer <- function(data.from.server     = NULL,
          # if data is suitably encrypted continue
          if (success)
          {
-
+            print("4")
             # create client-side R object for containing encrypted data
             assign(client.side.variable, data.frame(), envir = env)
             success <- exists(client.side.variable, envir = env)
@@ -78,6 +80,7 @@ dstr.transfer <- function(data.from.server     = NULL,
             # if successfully create continue
             if(success)
             {
+               print("5")
                # get data from the server
                success <- dstr.get.data.from.server(data.encrypted, no.rows, client.side.variable, datasources)
             }
@@ -269,8 +272,11 @@ dstr.check.param <- function(data.server = NULL,
 #'Server errors thrown SERVER::ERR::SHARING::001 to SERVER::ERR::SHARING::002, SERVER:ERR:021
 dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL, data.held.in.server = "D",datasources = NULL)
 {
-   expression <- call("isDataEncodedDS", data.server, data.encrypted)
-   outcome    <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
+   data.server.char <- paste(data.server, collapse = ";")
+   expression  <- call("isDataEncodedDS", data.server.char, data.encrypted)
+   outcome     <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
+   print("^^^^^^^^^^^^^")
+   print(outcome)
    return(dssp.transform.outcome.to.logical(outcome))
 }
 
