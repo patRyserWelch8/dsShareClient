@@ -53,18 +53,16 @@ dstr.transfer <- function(data.from.server     = NULL,
                                no.rows,
                                client.side.variable,
                                datasources)
-   print("1")
    # if arguments correct continue...
    if(success)
    {
-      print("2")
+
       # assign on the server the sharing settings for the transfer....
       success <- ds.assign.sharing.settings(datasources = datasources)
 
       # if assignment successful continue
       if (success)
       {
-         print("3")
          # check the data on the server are suitably encrypted - NEEDS REVIEWINNG
          success <- dstr.check.data.encrypted(data.from.server, data.encrypted, data.held.in.server, datasources)
 
@@ -72,7 +70,6 @@ dstr.transfer <- function(data.from.server     = NULL,
          # if data is suitably encrypted continue
          if (success)
          {
-            print("4")
             # create client-side R object for containing encrypted data
             assign(client.side.variable, data.frame(), envir = env)
             success <- exists(client.side.variable, envir = env)
@@ -80,7 +77,6 @@ dstr.transfer <- function(data.from.server     = NULL,
             # if successfully create continue
             if(success)
             {
-               print("5")
                # get data from the server
                success <- dstr.get.data.from.server(data.encrypted, no.rows, client.side.variable, datasources)
             }
@@ -96,24 +92,20 @@ dstr.transfer <- function(data.from.server     = NULL,
 #'@param data.from.server a list of encrypted data obtained from some dataSHIELD server
 #'@param client.side.variable a character variable representing the name of an R object
 #'in the global environment.
-dstr.concatenate <- function(data.from.server = list(), client.side.variable = NULL)
+dstr.concatenate   <- function(data.from.server = list(), client.side.variable = NULL)
 {
-
    #extract data from the structure sent from the server
-   extracted.data <- lapply(data.from.server, dstr.extract.encrypted.data)
-
-
+   extracted.data  <- lapply(data.from.server, dstr.extract.encrypted.data)
 
    # attach the sources to each matrix as last column
-   sources        <- 1:length(extracted.data)
+   sources         <- 1:length(extracted.data)
    extracted.data  <- lapply(sources,function(x,data){return(cbind(data[[x]],x))},data = extracted.data)
 
+   # bind the matrices together
+   extracted.data  <- do.call(rbind, extracted.data)
 
-    # bind the matrices together
-   extracted.data <- do.call(rbind, extracted.data)
-
-   # convert matrix into a data frame
-   extracted.data <- as.data.frame(extracted.data)
+   # convert matrix into a data table
+   extracted.data  <- data.table::as.data.table(extracted.data)
 
 
 
@@ -122,7 +114,7 @@ dstr.concatenate <- function(data.from.server = list(), client.side.variable = N
    data.saved <- get(client.side.variable, envir = env)
 
 
-   data.saved <- rbind.data.frame(data.saved, extracted.data)
+   data.saved <- rbind (data.saved, extracted.data)
 
    assign(client.side.variable, data.saved, envir = env)
 }
@@ -275,8 +267,6 @@ dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL,
    data.server.char <- paste(data.server, collapse = ";")
    expression  <- call("isDataEncodedDS", data.server.char, data.encrypted)
    outcome     <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
-   print("^^^^^^^^^^^^^")
-   print(outcome)
    return(dssp.transform.outcome.to.logical(outcome))
 }
 

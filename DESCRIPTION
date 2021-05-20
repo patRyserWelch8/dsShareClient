@@ -21,5 +21,6 @@ Imports:
     R6,
     opalr,
     httr,
-    readr
+    readr,
+    data.table
 RoxygenNote: 7.1.1
