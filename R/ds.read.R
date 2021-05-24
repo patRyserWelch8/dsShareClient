@@ -53,6 +53,14 @@ dstr.transfer <- function(data.from.server     = NULL,
                                no.rows,
                                client.side.variable,
                                datasources)
+
+   # limit to 1000 rows - over 1000 has some error messages
+   if(no.rows > 1000)
+   {
+      no.rows <- 1000
+      warning("The number of rows is limited to 1000....")
+   }
+
    # if arguments correct continue...
    if(success)
    {
@@ -94,6 +102,7 @@ dstr.transfer <- function(data.from.server     = NULL,
 #'in the global environment.
 dstr.concatenate   <- function(data.from.server = list(), client.side.variable = NULL)
 {
+
    #extract data from the structure sent from the server
    extracted.data  <- lapply(data.from.server, dstr.extract.encrypted.data)
 
@@ -131,6 +140,7 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
    field.names          <- names(data.from.server)
    expected.field.names <- c("header","payload","property.a","property.b","property.c","property.d")
    has.correct.field    <- all(expected.field.names %in% field.names)
+   received.matrix      <- matrix()
 
    # continue if fields are correct
    if(has.correct.field)
@@ -138,16 +148,23 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
       data       <- data.from.server$payload
       no.columns <- data.from.server$property.b
 
+
+
       if(is.character(data) & is.numeric(no.columns))
       {
+
+
          # checks it can be converted to numerical values
          can.be.converted <- grepl('^-?[0-9.;e]+$', data)
+
          if(can.be.converted)
          {
+
             # split character string into a list of elements
             data.list       <- strsplit(data,";")
             if (length(data.list[[1]]) > 1)
             {
+
                # transform into a vector and remove potential blank caracters
                data.vector <- unlist(data.list)
                data.vector <- gsub(" ", "",data.vector)
@@ -157,9 +174,11 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
                # check it is not a scalar!
                if (no.rows > 1 & no.columns > 1)
                {
+
                   # transform vector as numeric values and then as a matrix
                   data.numeric    <- as.numeric(x = data.vector)
                   received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
+
                }
             }
          }
