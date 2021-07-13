@@ -46,6 +46,7 @@ dstr.transfer <- function(data.from.server     = NULL,
    success <- FALSE
    env     <- globalenv()
 
+   print(0)
    #check the arguments are correct.....
    success <- dstr.check.param(data.from.server,
                                data.encrypted,
@@ -54,30 +55,34 @@ dstr.transfer <- function(data.from.server     = NULL,
                                client.side.variable,
                                datasources)
 
+   print(1)
    # limit to 1000 rows - over 1000 has some error messages
    if(no.rows > 1000)
    {
       no.rows <- 1000
       warning("The number of rows is limited to 1000....")
    }
-
+   print(2)
    # if arguments correct continue...
    if(success)
    {
-
+      print(3)
       # assign on the server the sharing settings for the transfer....
       success <- ds.assign.sharing.settings(datasources = datasources)
 
       # if assignment successful continue
       if (success)
       {
+         print(4)
          # check the data on the server are suitably encrypted - NEEDS REVIEWINNG
          success <- dstr.check.data.encrypted(data.from.server, data.encrypted, data.held.in.server, datasources)
 
+         print(5)
 
          # if data is suitably encrypted continue
          if (success)
          {
+            print(6)
             # create client-side R object for containing encrypted data
             assign(client.side.variable, data.frame(), envir = env)
             success <- exists(client.side.variable, envir = env)
@@ -85,6 +90,7 @@ dstr.transfer <- function(data.from.server     = NULL,
             # if successfully create continue
             if(success)
             {
+               print(7)
                # get data from the server
                success <- dstr.get.data.from.server(data.encrypted, no.rows, client.side.variable, datasources)
             }
