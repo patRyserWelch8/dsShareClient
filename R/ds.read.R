@@ -112,17 +112,21 @@ dstr.concatenate   <- function(data.from.server = list(), client.side.variable =
    #extract data from the structure sent from the server
    extracted.data  <- lapply(data.from.server, dstr.extract.encrypted.data)
 
+   print(extracted.data)
+
    # attach the sources to each matrix as last column
    sources         <- 1:length(extracted.data)
    extracted.data  <- lapply(sources,function(x,data){return(cbind(data[[x]],x))},data = extracted.data)
+   print(extracted.data)
 
    # bind the matrices together
    extracted.data  <- do.call(rbind, extracted.data)
+   print(extracted.data)
 
    # convert matrix into a data table
    extracted.data  <- data.table::as.data.table(extracted.data)
 
-
+   print(extracted.data)
 
    # save data
    env        <- globalenv()
@@ -208,6 +212,7 @@ dstr.get.data.from.server <- function(data.encrypted = NULL, no.rows = 1000, cli
    {
       print("...")
       data.from.server <- dstr.next(data.encrypted,no.rows, datasources)
+      print(data.from.server)
       dstr.concatenate(data.from.server, client.side.variable)
       stop          <- dstr.is.eof(data.encrypted, datasources)
    }
@@ -290,8 +295,11 @@ dstr.check.param <- function(data.server = NULL,
 dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL, data.held.in.server = "D",datasources = NULL)
 {
    data.server.char <- paste(data.server, collapse = ";")
+   print(data.server.char)
    expression  <- call("isDataEncodedDS", data.server.char, data.encrypted)
+   print(expression)
    outcome     <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
+   print(outcome)
    return(dssp.transform.outcome.to.logical(outcome))
 }
 
