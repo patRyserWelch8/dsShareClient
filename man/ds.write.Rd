@@ -16,6 +16,8 @@ ds.write(
 \arguments{
 \item{data.to.server}{- a character argument representing the name of new server variable}
 
+\item{class.type.server}{- a character argument indicating the a valid class}
+
 \item{no.rows}{- a numerical (integer) argument indicatind the maximum of rows used
 in one transfer of data}
 
