@@ -55,7 +55,7 @@ dswr.transfer <- function(data.to.server       = NULL,
                           client.side.split    = NULL,
                           datasources          = NULL)
 {
-
+  print(1)
   success <- dswr.check.param(data.to.server =  data.to.server,
                               class.type.server  = class.type.server,
                               no.rows = no.rows,
@@ -63,13 +63,15 @@ dswr.transfer <- function(data.to.server       = NULL,
                               column = column,
                               client.side.split = client.side.split,
                               datasources = datasources)
-
+  print(2)
   if(success)
   {
+    print(3)
     success <- dswr.split(client.side.variable, column, client.side.split, datasources)
 
     if(success)
     {
+      print(4)
       success <- dswr.write(data.to.server,class.type.server, no.rows, client.side.split, datasources)
     }
   }

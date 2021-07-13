@@ -17,6 +17,7 @@ library(testthat)
 library(httr)
 library(dsBaseClient)
 library(dsConnectClient)
+library(data.table)
 
 
 ds.test_env <- new.env()
