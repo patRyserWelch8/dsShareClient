@@ -91,7 +91,7 @@ source("connection_to_datasets/init_all_datasets.R")
 
   #check actual exchange of parameters
   #
-  ###print(evaluate_promise(.share.parameter(connections,param.names = c('pi_value', 'pi_value_B')),##print=TRUE))
+  ####print(evaluate_promise(.share.parameter(connections,param.names = c('pi_value', 'pi_value_B')),###print=TRUE))
   result <- .share.parameter(datasources = connections, param.names = c('pi_value', 'pi_value_B'),tolerance = 15)
   result <- ds.aggregate(datasources = connections, expression = 'DANGERgetparam("pi_value")')
   expect_equal(length(result), length(connections))

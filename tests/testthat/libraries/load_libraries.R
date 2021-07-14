@@ -1,7 +1,7 @@
 
 load.libraries <- function()
 {
-  ##print('Loading packages....')
+  ###print('Loading packages....')
  
   package.loaded = require('opalr')
   if (!package.loaded)
@@ -41,7 +41,7 @@ load.libraries <- function()
   #  library('dsBase')
   #}
 
-  ###print('dsModelling')
+  ####print('dsModelling')
   #package.loaded = require('dsModelling')
   #if (!package.loaded)
   #{
