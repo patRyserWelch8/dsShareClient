@@ -1,0 +1,373 @@
+devtools::testthat()
+use_testthat.R
+use_testthat()
+use_testthat()
+usethis::use_testthat()
+library(dsShareClient)
+library(dsShareClient)
+?datashield.aggregate
+library(dsShareClient)
+search()
+library(dsConnectClient)
+library(dsConnectClient)
+search()
+?search
+?apply
+x <- 1:length(search())
+x
+apply(x, FUN = exists("error_message", pos = x))
+apply(x, FUN = exists("error_message", where = x))
+?exists()
+exists("error_message", where = 2)
+exists("error_message", where = 3)
+exists("error_message", where = 4)
+sapply(x, FUN = exists("error_message", where = x))
+?eapply
+devtools::document()
+library(dsShareClient)
+devtools::document()
+library(dsShareClient)
+library(dsShareClient)
+devtools::document()
+library(dsShareClient)
+devtools::document()
+devtools::document()
+devtools::document()
+devtools::build()
+library(dsShareClient)
+search()
+ls(pos = 3)
+ls(pos = 2)
+library(dsConnectClient)
+library(dsConnectClient)
+library(dsShareClient)
+ls(pos = 2)
+search()
+ls(pos = 2)
+ls(pos = 3)
+library(dsShareClient)
+search()
+devtools::document()
+devtools::document()
+devtools::document()
+devtools::document()
+?datashield.aggregate
+?ds.assign
+devtools::document()
+?ds.assign
+ds.assign.sharing.settings(?)
+?ds.assign.sharing.settings(?)
+?ds.assign.sharing.settings()
+devtools::document
+devtools::document()
+?datashield.aggregate
+devtools::document()
+devtools::document()
+usethis::create_package()
+devtools::document()
+devtools::document()
+devtools::document()
+library(dsShareClient)
+ds.error("hi")
+library(dsConnectClient)
+ds.error("hi")
+devtools::document()
+library(dsShareClient)
+library(dsShareClient)
+detach("package:dsShareClient", unload = TRUE)
+remove.packages("dsShareClient")
+library(dsShareClient)
+library(dsShareClient)
+a <- 2343
+unlist(a)
+library(dsShareClient)
+detach("package:dsShareClient", unload = TRUE)
+remove.packages("dsShareClient")
+library(dsShareClient)
+devtools::check()
+library(dsShareClient)
+assign(" hi", pi)
+hi
+hi
+?dsConnectClient::ds.exists.on.server()
+a <- new data.frame()
+a <- new data.frame(a = 3, b =5)
+a <- data.frame(a = 3, b =5)
+class(a)
+?ds.class
+devtools::document()
+?dstr.is.eof
+library(dsShareClient)
+?lapply
+?apply(array, margin, ...)
+?Position
+a <- matrix(c(1:10),2,5)
+a
+b <- cbind(a,1)
+b
+?which
+c <- (a = 4, b= 5,c=45)
+c <- list(a = 4, b= 5,c=45)
+c
+names(c)
+d <- names(c)
+which(c == d[1])
+d[1]
+d
+c
+which(c == d[1])
+?do.call
+A <- 2
+f <- function(x) print(x^2)
+env <- new.env()
+assign("A", 10, envir = env)
+assign("f", f, envir = env)
+f <- function(x) print(x)
+f(A)                                      # 2
+do.call("f", list(A))                     # 2
+do.call("f", list(A), envir = env)        # 4
+do.call( f,  list(A), envir = env)        # 2
+do.call("f", list(quote(A)), envir = env) # 100
+do.call( f,  list(quote(A)), envir = env) # 10
+do.call("f", list(as.name("A")), envir = env) # 100
+eval(call("f", A))                      # 2
+eval(call("f", quote(A)))               # 2
+eval(call("f", A), envir = env)         # 4
+eval(call("f", quote(A)), envir = env)  # 100
+[Package base version 4.0.3 Index]
+a <- list(b = c(1:10, 2,5), c = c(101:110, 2,5), d = c(1001:1010, 2,5) )
+a
+a <- list(b = matrix(1:10, 2,5), c = matrix(101:110, 2,5), d = matrix(1001:1010, 2,5) )
+a
+do.call(rbind,a)
+library(dsShareClient)
+Sys.time()
+as.numeric(Sys.time())
+devtools::document()
+?ds.read
+library(dsShareClient)
+detach("package:dsShareClient", unload = TRUE)
+remove.packages("dsShareClient")
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+memory.size()
+mem.size()
+library(pryr)
+memory.size()
+install.packages(pryr)
+install.packages("pryr")
+mem_used()
+library(pryr)
+mem_used()
+mem_change(x <- 1:1e6)
+mem_change(x <- 1:1e30)
+mem_change(x <- 1:1e20)
+mem_change(x <- 1:1e10)
+tempdir()
+system.file("extdata", "mtcars.csv", package = "readr")
+#> [1] "/Users/runner/work/_temp/Library/readr/extdata/mtcars.csv"
+?write.table
+x <- data.frame(log=rep(c(FALSE, TRUE), length.out=26), int=1:26, dbl=1:26 + 0.1
+, fac=factor(letters), ord=ordered(LETTERS), dct=Sys.time()+1:26
+, dat=seq(as.Date("1910/1/1"), length.out=26, by=1), stringsAsFactors = TRUE)
+ffx <- as.ffdf(x)
+csvfile <- tempPathFile(path=getOption("fftempdir"), extension="csv")
+write.csv.ffdf(ffx, file=csvfile)
+write.csv.ffdf(ffx, file=csvfile, append=TRUE)
+ffy <- read.csv.ffdf(file=csvfile, header=TRUE
+, colClasses=c(ord="ordered", dct="POSIXct", dat="Date"))
+rm(ffx, ffy); gc()
+unlink(csvfile)
+## Not run:
+# Attention, this takes very long
+vmodes <- c(log="boolean", int="byte", dbl="single"
+, fac="short", ord="short", dct="single", dat="single")
+message("create a ffdf with 7 columns and 78 mio rows")
+system.time({
+x <- data.frame(log=rep(c(FALSE, TRUE), length.out=26), int=1:26, dbl=1:26 + 0.1
+, fac=factor(letters), ord=ordered(LETTERS), dct=Sys.time()+1:26
+, dat=seq(as.Date("1910/1/1"), length.out=26, by=1), stringsAsFactors = TRUE)
+x <- do.call("rbind", rep(list(x), 10))
+x <- do.call("rbind", rep(list(x), 10))
+x <- do.call("rbind", rep(list(x), 10))
+x <- do.call("rbind", rep(list(x), 10))
+ffx <- as.ffdf(x, vmode = vmodes)
+for (i in 2:300){
+message(i, "\n")
+last <- nrow(ffx) + nrow(x)
+first <- last - nrow(x) + 1L
+nrow(ffx) <- last
+ffx[first:last,] <- x
+}
+})
+csvfile <- tempPathFile(path=getOption("fftempdir"), extension="csv")
+write.csv.ffdf(ffx, file=csvfile, VERBOSE=TRUE)
+ffy <- read.csv.ffdf(file=csvfile, header=TRUE
+, colClasses=c(ord="ordered", dct="POSIXct", dat="Date")
+, asffdf_args=list(vmode = vmodes), VERBOSE=TRUE)
+rm(ffx, ffy); gc()
+unlink(csvfile)
+## End(Not run)
+x <- data.frame(a = I("a \" quote"), b = pi)
+x
+write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+qmethod = "double")
+write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+qmethod = "double")
+write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+qmethod = "double")
+write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+qmethod = "double")
+write.table(x, file = "foo.csv", sep = ",", col.names = NA,
+qmethod = "double", append = TRUE)
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = TRUE)
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = TRUE, sep = ,)
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = TRUE, sep = ",")
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = TRUE)
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = TRUE)
+x <- data.frame(a = runif(20), b = runif(20))
+x
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = FAlse)
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = F)
+write.table(x, file = "foo.csv", sep = ",", row.names = F col.names = F,
+qmethod = "double", append = F)
+write.table(x, file = "foo.csv", sep = ",", row.names = F, col.names = F,
+qmethod = "double", append = F)
+read.table("foo.csv", rep=",")
+read.table("foo.csv")
+read.table("foo.csv", header = TRUE, sep = ",", row.names = 1)
+read.table("foo.csv", header = TRUE, sep = ",", row.names = 1, col.names = 0)
+read.table("foo.csv", header = TRUE, sep = ",", row.names = 1, col.names = NA)
+read.table("foo.csv", header = TRUE, sep = ",", row.names = 1, col.names = 0)
+tempfile()
+test1 <- c(1:5, "6,7", "8,9,10")
+tf <- tempfile()
+writeLines(test1, tf)
+read.csv(tf, fill = TRUE) # 1 column
+test1
+test1 <- c(1:5, "6,7", "8,9,10")
+tf <- tempfile()
+writeLines(x, tf)
+read.csv(tf, fill = TRUE) # 1 column
+write.table(x, file = "foo.csv", sep = ",", col.names = F,
+qmethod = "double", append = TRUE)
+tf <- tempfile()
+write.table(x, file = tf, sep = ",", col.names = F,
+qmethod = "double", append = TRUE)
+read.csv(tf, fill = TRUE)
+write.table(x, file = tf, sep = ",", row.names = F, col.names = F,
+qmethod = "double", append = TRUE)
+read.csv(tf, fill = TRUE)
+tf <- tempfile()
+write.table(x, file = tf, sep = ",", row.names = F, col.names = F,
+qmethod = "double", append = TRUE)
+write.table(x, file = tf, sep = ",", row.names = F, col.names = F,
+qmethod = "double", append = TRUE)
+read.csv(tf, fill = TRUE)
+read.csv(tf, fill = TRUE, col.names = "V")
+read.csv(tf, fill = TRUE, col.names = c("V1", "V2"))
+write.table(x, file = tf, sep = ",", row.names = F, col.names = T,
+qmethod = "double", append = TRUE)
+write.table(x, file = tf, sep = ",", row.names = F, col.names = T,
+qmethod = "double", append = FALSE)
+read.csv(tf, fill = TRUE, col.names = c("V1", "V2"))
+read.table(tf, fill = TRUE, col.names = c("V1", "V2"))
+file.exists(tf)
+read.table("/var/folders/y5/y96jzvpx7db5_4xthz_ybwsr0000gn/T//Rtmp9YGXhy/filee987e53bc58", fill = TRUE
+)
+.libPaths()
+.package
+.Library.site
+.Library
+Package()
+Package
+installed.packages()
+system.file()
+?system.file
+tempdir()
+tempfile
+tempfile()
+library(dsShareClient)
+library(opalr)
+b <- devtools::build()
+opal <- opalr::opal.login('administrator', 'datashield_test&', url = 'http://192.168.56.100:8080/')
+opalr::dsadmin.install_local_package(opal, b)
+opalr::opal.logout(opal)
+library(opalr)
+b <- devtools::build()
+opal <- opalr::opal.login('administrator', 'datashield_test&', url = 'http://192.168.56.100:8080/')
+opalr::dsadmin.install_local_package(opal, b)
+opalr::opal.logout(opal)
+b <- devtools::buid()
+b <- devtools::build()
+devtools::install(b)
+devtools::install()
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+rbind.data.table
+?rbind.data.table
+library(dsShareClient)
+?rbind.data.table
+library(data.table)
+?rbind.data.table
+DT1 = data.table(A=1:3,B=letters[1:3])
+DT2 = data.table(B=letters[4:5],A=4:5)
+l = list(DT1,DT2)
+View(DT1)
+View(DT2)
+l
+rbindlist(l, use.names=TRUE)
+?as.data.table
+(dt1 <- data.table(A = letters[1:10], X = 1:10, key = "A"))
+(dt2 <- data.table(A = letters[5:14], Y = 1:10, key = "A"))
+merge(dt1, dt2)
+merge(dt1, dt2, all = TRUE)
+dt1
+dt2
+?merge
+dt1
+dt2
+rbind(dt1,dt2)
+(dt1 <- data.table(A = letters[1:10], X = 1:10, key = "A"))
+(dt2 <- data.table(A = letters[5:14], X = 1:10, key = "A"))
+c <- rbind(dt1, dt2)
+c
+library(dsShareClient)
+remove.packages("dsShareClient")
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+source('~/Documents/GitHub/dsShareClient/R/ds.read.R')
+library(dsShareClient)
+remove.packages("dsShareClient")
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)
+library(dsShareClient)

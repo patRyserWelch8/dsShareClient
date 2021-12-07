@@ -46,7 +46,6 @@ dstr.transfer <- function(data.from.server     = NULL,
    success <- FALSE
    env     <- globalenv()
 
-   #print(0)
    #check the arguments are correct.....
    success <- dstr.check.param(data.from.server,
                                data.encrypted,
@@ -55,34 +54,30 @@ dstr.transfer <- function(data.from.server     = NULL,
                                client.side.variable,
                                datasources)
 
-   #print(1)
    # limit to 1000 rows - over 1000 has some error messages
    if(no.rows > 1000)
    {
       no.rows <- 1000
       warning("The number of rows is limited to 1000....")
    }
-   #print(2)
+
    # if arguments correct continue...
    if(success)
    {
-      #print(3)
+
       # assign on the server the sharing settings for the transfer....
       success <- ds.assign.sharing.settings(datasources = datasources)
 
       # if assignment successful continue
       if (success)
       {
-         #print(4)
-         # check the data on the server are suitably encrypted - NEEDS REVIEWINNG - remove 8/12/2012 - insecure now.
-         #success <- dstr.check.data.encrypted(data.from.server, data.encrypted, data.held.in.server, datasources)
+         # check the data on the server are suitably encrypted - NEEDS REVIEWINNG
+         success <- dstr.check.data.encrypted(data.from.server, data.encrypted, data.held.in.server, datasources)
 
-         #print(5)
 
          # if data is suitably encrypted continue
-         #if (success)
-         #{
-            #print(6)
+         if (success)
+         {
             # create client-side R object for containing encrypted data
             assign(client.side.variable, data.frame(), envir = env)
             success <- exists(client.side.variable, envir = env)
@@ -90,11 +85,10 @@ dstr.transfer <- function(data.from.server     = NULL,
             # if successfully create continue
             if(success)
             {
-               #print(7)
                # get data from the server
                success <- dstr.get.data.from.server(data.encrypted, no.rows, client.side.variable, datasources)
             }
-         #}
+         }
       }
    }
 
@@ -111,24 +105,18 @@ dstr.concatenate   <- function(data.from.server = list(), client.side.variable =
 
    #extract data from the structure sent from the server
    extracted.data  <- lapply(data.from.server, dstr.extract.encrypted.data)
-   #print("6666")
-   #print(extracted.data)
 
    # attach the sources to each matrix as last column
    sources         <- 1:length(extracted.data)
    extracted.data  <- lapply(sources,function(x,data){return(cbind(data[[x]],x))},data = extracted.data)
-   #print("7777")
-   #print(extracted.data)
 
    # bind the matrices together
-   #print("88888")
    extracted.data  <- do.call(rbind, extracted.data)
-   #print(extracted.data)
 
    # convert matrix into a data table
    extracted.data  <- data.table::as.data.table(extracted.data)
 
-   #print(extracted.data)
+
 
    # save data
    env        <- globalenv()
@@ -160,9 +148,13 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
       data       <- data.from.server$payload
       no.columns <- data.from.server$property.b
 
+
+
       if(is.character(data) & is.numeric(no.columns))
       {
-        # checks it can be converted to numerical values
+
+
+         # checks it can be converted to numerical values
          can.be.converted <- grepl('^-?[0-9.;e]+$', data)
 
          if(can.be.converted)
@@ -172,16 +164,23 @@ dstr.extract.encrypted.data <- function(data.from.server = list())
             data.list       <- strsplit(data,";")
             if (length(data.list[[1]]) > 1)
             {
+
                # transform into a vector and remove potential blank caracters
                data.vector <- unlist(data.list)
                data.vector <- gsub(" ", "",data.vector)
                # compute no rows
                no.rows     <- length(data.vector)/no.columns
 
-               # transform vector as numeric values and then as a matrix
-               data.numeric    <- as.numeric(x = data.vector)
-               received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
-             }
+               # check it is not a scalar!
+               if (no.rows > 1 & no.columns > 1)
+               {
+
+                  # transform vector as numeric values and then as a matrix
+                  data.numeric    <- as.numeric(x = data.vector)
+                  received.matrix <- matrix(data=data.numeric,nrow=no.rows, ncol= no.columns)
+
+               }
+            }
          }
       }
    }
@@ -285,11 +284,8 @@ dstr.check.param <- function(data.server = NULL,
 dstr.check.data.encrypted <- function(data.server = NULL, data.encrypted = NULL, data.held.in.server = "D",datasources = NULL)
 {
    data.server.char <- paste(data.server, collapse = ";")
-   #print(data.server.char)
    expression  <- call("isDataEncodedDS", data.server.char, data.encrypted)
-   #print(expression)
    outcome     <- dsConnectClient::ds.aggregate(expression = expression, error.stop = TRUE, datasources = datasources)
-   #print(outcome)
    return(dssp.transform.outcome.to.logical(outcome))
 }
 
